@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <script src="https://unpkg.com/htmx.org@1.9.7"></script>
-        <title>Web Dev</title>
-    </head>
-    <body>
-        <div>Hello, {{ .Name }}</div>
-    </body>
+<head>
+	<meta charset="UTF-8">
+	<script src="https://unpkg.com/htmx.org@1.9.7"></script>
+	<title>Web Dev</title>
+</head>
+<body>
+<div>Hello, {{ .Name }}</div>
+<br>
+<br>
+<form hx-post="/todo" hx-target="#todosBody" hx-swap="beforeend">
+	<label for="newTodo">Todo:</label>
+	<input type="text" id="newTodo" name="newTodo"></input>
+	<input type="submit" value="Create"></input>
+</form>
+<br>
+<table>
+	<thead>
+	<tr>
+		<th>Todo</th>
+		<th>Done?</th>
+	</tr>
+	</thead>
+	<tbody id="todosBody">
+	{{ range .Todos}}
+	{{block "todo" .}}{{end}}
+	{{end}}
+	</tbody>
+</table>
+</body>
 </html>
