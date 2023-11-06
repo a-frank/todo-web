@@ -1,4 +1,4 @@
-module web-dev
+module github.com/a-frank/web-dev
 
 go 1.21.3
 
