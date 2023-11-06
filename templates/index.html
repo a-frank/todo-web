@@ -10,7 +10,7 @@
 	<title>Web Dev</title>
 </head>
 <body>
-<h2>Hello, {{ .Name }}</h2>
+<h2>Hello, {{.Name}}</h2>
 <br>
 <form hx-post="/todo" hx-target="#todosBody" hx-swap="beforeend" class="form-floating">
 	<input type="text" id="newTodo" name="newTodo" class="form-control" placeholder="Enter a new todo..."></input>

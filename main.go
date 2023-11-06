@@ -11,6 +11,7 @@ func main() {
 	ginServer.GET("/", routes.GetIndex)
 	ginServer.POST("/todo", routes.AddTodo)
 	ginServer.POST("/todo/:id/toggle-done", routes.ToggleDone)
+
 	err := ginServer.Run()
 	fmt.Printf("Error with server %s", err.Error())
 }
