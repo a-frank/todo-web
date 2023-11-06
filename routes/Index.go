@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Index(context *gin.Context) {
+func GetIndex(context *gin.Context) {
 	t, err := template.ParseFiles("./templates/index.html")
 	if check(err, context) != nil {
 		return

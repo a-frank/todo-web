@@ -9,7 +9,7 @@ import (
 
 func main() {
 	ginServer := gin.Default()
-	ginServer.GET("/", routes.Index)
+	ginServer.GET("/", routes.GetIndex)
 	err := ginServer.Run()
 	fmt.Printf("Error with server %s", err.Error())
 }
