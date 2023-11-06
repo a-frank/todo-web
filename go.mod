@@ -2,7 +2,10 @@ module github.com/a-frank/web-dev
 
 go 1.21.3
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/gin-gonic/gin v1.9.1
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
+)
 
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect

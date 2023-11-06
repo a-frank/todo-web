@@ -1,6 +1,14 @@
 {{define "todo"}}
 <tr id="todo_{{ .Id}}">
-	<td>{{ .Todo }}</td>
-	<td><input type="checkbox" class="form-check-input" {{if .Done}}checked{{else}}{{end}}></input></td>
+	<td>{{if .Done}}<s>{{end}}{{ .Todo }}{{if .Done}}</s>{{end}}</td>
+	<td>
+		<input type="checkbox"
+			   class="form-check-input"
+			   {{if.Done}}checked{{end}}
+			   hx-post="/todo/{{.Id}}/toggle-done"
+			   hx-target="#todo_{{.Id}}"
+			   hx-swap="outerHTML"
+		>
+	</td>
 </tr>
 {{end}}

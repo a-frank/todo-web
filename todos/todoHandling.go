@@ -1,22 +1,40 @@
 package todos
 
-var todoState = []Todo{
-	{Id: 1, Todo: "Something", Done: false},
-	{Id: 2, Todo: "Nothing", Done: true},
+import (
+	"fmt"
+	"golang.org/x/exp/maps"
+)
+
+var todoState = map[uint32]Todo{
+	1: {Id: 1, Todo: "Something", Done: false},
+	2: {Id: 2, Todo: "Nothing", Done: true},
 }
 
 func GetTodos() []Todo {
-	return todoState
+	return maps.Values(todoState)
 }
 
 func AddNewTodo(todoText string) Todo {
 	numTodos := len(todoState)
 
+	id := uint32(numTodos) + 1
 	todo := Todo{
-		Id:   uint32(numTodos) + 1,
+		Id:   id,
 		Todo: todoText,
 		Done: false,
 	}
-	todoState = append(todoState, todo)
+	todoState[id] = todo
 	return todo
+}
+
+func ToggleDone(todoId uint32) (Todo, error) {
+	todo, found := todoState[todoId]
+	if !found {
+		return Todo{}, fmt.Errorf("todo %d not found", todoId)
+	}
+
+	todo.Done = !todo.Done
+	todoState[todoId] = todo
+
+	return todo, nil
 }

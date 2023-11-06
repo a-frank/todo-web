@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 func GetIndex(context *gin.Context) {
@@ -43,6 +44,24 @@ func AddTodo(context *gin.Context) {
 	newTodo := todos.AddNewTodo(todoText)
 
 	err = t.ExecuteTemplate(context.Writer, "todo", newTodo)
+	if check(err, context) != nil {
+		return
+	}
+	context.Status(http.StatusOK)
+}
+
+func ToggleDone(context *gin.Context) {
+	t, err := template.ParseFiles("./templates/todo.tmpl")
+	if check(err, context) != nil {
+		return
+	}
+
+	paramId, _ := strconv.Atoi(context.Param("id"))
+	todoId := uint32(paramId)
+	var updatedTodo todos.Todo
+	updatedTodo, err = todos.ToggleDone(todoId)
+
+	err = t.ExecuteTemplate(context.Writer, "todo", updatedTodo)
 	if check(err, context) != nil {
 		return
 	}
