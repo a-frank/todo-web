@@ -1,6 +1,6 @@
 {{define "todo"}}
 <tr id="todo_{{ .Id}}">
 	<td>{{ .Todo }}</td>
-	<td><input type="checkbox" {{if .Done}}checked{{else}}{{end}}></input></td>
+	<td><input type="checkbox" class="form-check-input" {{if .Done}}checked{{else}}{{end}}></input></td>
 </tr>
 {{end}}
