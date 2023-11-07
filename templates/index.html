@@ -11,18 +11,6 @@
 	<link href="css/dropspace.css" rel="stylesheet">
 
 	<title>Web Dev</title>
-
-	<script>
-		function drop(ev) {
-			ev.preventDefault();
-			let todoId = ev.dataTransfer.getData("text")
-			htmx.ajax('DELETE', '/todo/' + todoId, {
-				target: '#todosBody',
-				swap: 'innerHTML',
-				indicator: '#toggle-done-indicator'
-			});
-		}
-	</script>
 </head>
 <body style="padding: 16px">
 <h2>Hello, {{.Name}}</h2>
@@ -58,12 +46,18 @@
 </table>
 
 <div
+	id="deleteArea"
 	style="margin-top: 64px;"
 	class="dropspace"
-	_="on dragenter or dragover halt the event then set the target's style.background to '#666666'
-		on dragleave or drop set the target's style.background to '#CCCCCC'
+	_="on dragenter or dragover halt the event then set my style.background to '#666666'
+		on dragleave or drop set my style.background to '#CCCCCC'
+		on drop set @hx-delete to `/todo/${event.dataTransfer.getData('text')}` then htmx.process(#deleteArea) then send 'delete-todo' to #deleteArea
 	"
-	ondrop="drop(event)">
+	hx-trigger="delete-todo"
+	hx-target="#todosBody"
+	hx-swap="innerHTML"
+	hx-indicator="#toggle-done-indicator"
+>
 	<img src="images/delete.svg" alt="delete">
 </div>
 </body>
