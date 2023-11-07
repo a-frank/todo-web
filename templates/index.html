@@ -9,16 +9,16 @@
 
 	<title>Web Dev</title>
 </head>
-<body>
+<body style="padding: 16px">
 <h2>Hello, {{.Name}}</h2>
-<br>
+
 <form hx-post="/todo" hx-target="#todosBody" hx-swap="beforeend" class="form-floating">
-	<input type="text" id="newTodo" name="newTodo" class="form-control" placeholder="Enter a new todo..."></input>
+	<input type="text" id="newTodo" name="newTodo" class="form-control" placeholder="Enter a new todo...">
 	<label for="newTodo">New Todo</label>
-	<input type="submit" value="Create" class="btn btn-primary"></input>
+	<input type="submit" value="Create" class="btn btn-primary" style="margin-top: 8px; float: right">
 </form>
-<br>
-<table class="table table-striped">
+
+<table class="table table-striped" style="margin-top: 64px">
 	<thead class="table-dark">
 	<tr>
 		<th>Todo</th>

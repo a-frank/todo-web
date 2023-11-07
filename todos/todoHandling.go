@@ -3,6 +3,7 @@ package todos
 import (
 	"fmt"
 	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 var todoState = map[uint32]Todo{
@@ -11,7 +12,11 @@ var todoState = map[uint32]Todo{
 }
 
 func GetTodos() []Todo {
-	return maps.Values(todoState)
+	values := maps.Values(todoState)
+	slices.SortStableFunc(values, func(a, b Todo) int {
+		return int(a.Id) - int(b.Id)
+	})
+	return values
 }
 
 func AddNewTodo(todoText string) Todo {
