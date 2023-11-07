@@ -14,4 +14,5 @@ FROM alpine:3.18
 COPY --from=build /build/web-dev /app/web-dev
 COPY templates /app/templates
 WORKDIR /app
+ENV GIN_MODE=release
 CMD ["./web-dev"]

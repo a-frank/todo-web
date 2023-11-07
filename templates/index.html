@@ -31,10 +31,13 @@
 	  hx-post="/todo"
 	  hx-indicator="#toggle-done-indicator"
 	  hx-swap="beforeend"
-	  hx-target="#todosBody">
+	  hx-target="#todosBody"
+	  hx-on::after-request="if(event.detail.successful) this.reset()"
+	  hx-disabled-elt="#submitTodo"
+>
 	<input type="text" id="newTodo" name="newTodo" class="form-control" placeholder="Enter a new todo...">
 	<label for="newTodo">New Todo</label>
-	<input type="submit" value="Create" class="btn btn-primary" style="margin-top: 8px; float: right">
+	<input id="submitTodo" type="submit" value="Create" class="btn btn-primary" style="margin-top: 8px; float: right">
 </form>
 
 <table id="todos" class="table table-striped" style="margin-top: 64px">
