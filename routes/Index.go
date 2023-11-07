@@ -68,6 +68,27 @@ func ToggleDone(context *gin.Context) {
 	context.Status(http.StatusOK)
 }
 
+func DeleteTodo(context *gin.Context) {
+	t, err := template.ParseFiles("./templates/todo.tmpl")
+	if check(err, context) != nil {
+		return
+	}
+
+	paramId, _ := strconv.Atoi(context.Param("id"))
+	todoId := uint32(paramId)
+
+	remainingTodos := todos.DeleteTodo(todoId)
+
+	for _, todo := range remainingTodos {
+		err = t.ExecuteTemplate(context.Writer, "todo", todo)
+		if check(err, context) != nil {
+			return
+		}
+	}
+
+	context.Status(http.StatusOK)
+}
+
 type indexData struct {
 	Name  string
 	Todos []todos.Todo

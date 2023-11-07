@@ -11,6 +11,8 @@ var todoState = map[uint32]Todo{
 	2: {Id: 2, Todo: "Nothing", Done: true},
 }
 
+var todoCounter uint32 = 2
+
 func GetTodos() []Todo {
 	values := maps.Values(todoState)
 	slices.SortStableFunc(values, func(a, b Todo) int {
@@ -20,9 +22,8 @@ func GetTodos() []Todo {
 }
 
 func AddNewTodo(todoText string) Todo {
-	numTodos := len(todoState)
-
-	id := uint32(numTodos) + 1
+	todoCounter++
+	id := todoCounter
 	todo := Todo{
 		Id:   id,
 		Todo: todoText,
@@ -42,4 +43,9 @@ func ToggleDone(todoId uint32) (Todo, error) {
 	todoState[todoId] = todo
 
 	return todo, nil
+}
+
+func DeleteTodo(todoId uint32) []Todo {
+	delete(todoState, todoId)
+	return GetTodos()
 }

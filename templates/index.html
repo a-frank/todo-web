@@ -8,8 +8,29 @@
 		  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 	<link href="css/loader.css" rel="stylesheet">
+	<link href="css/dropspace.css" rel="stylesheet">
 
 	<title>Web Dev</title>
+
+	<script>
+		function drag(ev) {
+			ev.dataTransfer.setData("text", ev.target.id.split('_')[1])
+		}
+
+		function allowDrop(ev) {
+			ev.preventDefault();
+		}
+
+		function drop(ev) {
+			ev.preventDefault();
+			let todoId = ev.dataTransfer.getData("text")
+			htmx.ajax('DELETE', '/todo/' + todoId, {
+				target: '#todosBody',
+				swap: 'innerHTML',
+				indicator: '#toggle-done-indicator'
+			});
+		}
+	</script>
 </head>
 <body style="padding: 16px">
 <h2>Hello, {{.Name}}</h2>
@@ -24,7 +45,7 @@
 	<input type="submit" value="Create" class="btn btn-primary" style="margin-top: 8px; float: right">
 </form>
 
-<table class="table table-striped" style="margin-top: 64px">
+<table id="todos" class="table table-striped" style="margin-top: 64px">
 	<thead class="table-dark">
 	<tr>
 		<th>Todo</th>
@@ -40,5 +61,13 @@
 	{{end}}
 	</tbody>
 </table>
+
+<div
+	style="margin-top: 64px;"
+	class="dropspace"
+	ondragover="allowDrop(event)"
+	ondrop="drop(event)">
+	<img src="images/delete.svg" alt="delete">
+</div>
 </body>
 </html>

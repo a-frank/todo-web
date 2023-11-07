@@ -1,5 +1,5 @@
 {{define "todo"}}
-<tr id="todo_{{.Id}}">
+<tr id="todo_{{.Id}}" draggable="true" ondragstart="drag(event)">
 	<td>{{if .Done}}<s>{{end}}{{.Todo}}{{if .Done}}</s>{{end}}</td>
 	<td>
 		<input type="checkbox"
