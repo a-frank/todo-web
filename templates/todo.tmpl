@@ -8,6 +8,8 @@
 			   hx-post="/todo/{{.Id}}/toggle-done"
 			   hx-target="#todo_{{.Id}}"
 			   hx-swap="outerHTML"
+			   hx-indicator="#toggle-done-indicator"
+			   hx-disabled-elt="this"
 		>
 	</td>
 </tr>

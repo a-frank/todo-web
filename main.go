@@ -8,6 +8,9 @@ import (
 
 func main() {
 	ginServer := gin.Default()
+
+	ginServer.Static("/css", "./templates/css")
+
 	ginServer.GET("/", routes.GetIndex)
 	ginServer.POST("/todo", routes.AddTodo)
 	ginServer.POST("/todo/:id/toggle-done", routes.ToggleDone)
