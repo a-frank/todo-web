@@ -1,6 +1,6 @@
 {{define "todo"}}
 <tr id="todo_{{.Id}}" draggable="true"
-	_="on dragstart call event.dataTransfer.setData('text', event.target.id.split('_')[1])">
+	_="on dragstart call event.dataTransfer.setData('text', {{.Id}})">
 	<td>{{if .Done}}<s>{{end}}{{.Todo}}{{if .Done}}</s>{{end}}</td>
 	<td>
 		<input type="checkbox"
