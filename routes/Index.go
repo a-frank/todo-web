@@ -14,7 +14,10 @@ func GetIndex(context *gin.Context) {
 		return
 	}
 
-	allTodos := todos.GetTodos()
+	allTodos, err := todos.GetTodos()
+	if check(err, context) != nil {
+		return
+	}
 
 	err = t.Execute(context.Writer, indexData{
 		Name:  "Go Gin",
@@ -41,7 +44,10 @@ func AddTodo(context *gin.Context) {
 		return
 	}
 
-	newTodo := todos.AddNewTodo(todoText)
+	newTodo, err := todos.AddNewTodo(todoText)
+	if check(err, context) != nil {
+		return
+	}
 
 	err = t.ExecuteTemplate(context.Writer, "todo", newTodo)
 	if check(err, context) != nil {
@@ -58,8 +64,7 @@ func ToggleDone(context *gin.Context) {
 
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
-	var updatedTodo todos.Todo
-	updatedTodo, err = todos.ToggleDone(todoId)
+	updatedTodo, err := todos.ToggleDone(todoId)
 
 	err = t.ExecuteTemplate(context.Writer, "todo", updatedTodo)
 	if check(err, context) != nil {
@@ -77,7 +82,10 @@ func DeleteTodo(context *gin.Context) {
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
 
-	remainingTodos := todos.DeleteTodo(todoId)
+	remainingTodos, err := todos.DeleteTodo(todoId)
+	if check(err, context) != nil {
+		return
+	}
 
 	for _, todo := range remainingTodos {
 		err = t.ExecuteTemplate(context.Writer, "todo", todo)

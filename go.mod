@@ -4,6 +4,7 @@ go 1.21.3
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/lib/pq v1.10.9
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 )
 
