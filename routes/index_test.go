@@ -12,7 +12,7 @@ func TestGetIndex(t *testing.T) {
 	testRecorder := httptest.NewRecorder()
 	_, testEngine := gin.CreateTestContext(testRecorder)
 
-	todoStore := &test.MemStore{}
+	todoStore := test.NewMemStore()
 	_, _ = todoStore.Add("New Todo")
 	env := &RouterEnv{
 		Store:        todoStore,
