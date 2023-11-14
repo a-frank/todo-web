@@ -1,15 +1,15 @@
 name: Build
 on: [push]
 
-jobs:
-  build:
+jobs: 
+  build: 
     runs-on: ubuntu-latest
 
-    steps:
+    steps: 
       - uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v4
-        with:
+        with: 
           go-version: '1.21.4'
       - name: Install dependencies
         run: go get .
