@@ -8,13 +8,13 @@ import (
 	"strconv"
 )
 
-func GetIndex(context *gin.Context, h *todos.DbHandler) {
+func GetIndex(context *gin.Context, h todos.TodoStore) {
 	t, err := template.ParseFiles("./templates/index.html", "./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
 
-	allTodos, err := h.GetTodos()
+	allTodos, err := h.GetAll()
 	if check(err, context) != nil {
 		return
 	}
@@ -29,7 +29,7 @@ func GetIndex(context *gin.Context, h *todos.DbHandler) {
 	context.Status(http.StatusOK)
 }
 
-func AddTodo(context *gin.Context, h *todos.DbHandler) {
+func AddTodo(context *gin.Context, h todos.TodoStore) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -44,7 +44,7 @@ func AddTodo(context *gin.Context, h *todos.DbHandler) {
 		return
 	}
 
-	newTodo, err := h.AddNewTodo(todoText)
+	newTodo, err := h.Add(todoText)
 	if check(err, context) != nil {
 		return
 	}
@@ -56,7 +56,7 @@ func AddTodo(context *gin.Context, h *todos.DbHandler) {
 	context.Status(http.StatusOK)
 }
 
-func ToggleDone(context *gin.Context, h *todos.DbHandler) {
+func ToggleDone(context *gin.Context, h todos.TodoStore) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -73,7 +73,7 @@ func ToggleDone(context *gin.Context, h *todos.DbHandler) {
 	context.Status(http.StatusOK)
 }
 
-func DeleteTodo(context *gin.Context, h *todos.DbHandler) {
+func DeleteTodo(context *gin.Context, h todos.TodoStore) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -82,7 +82,7 @@ func DeleteTodo(context *gin.Context, h *todos.DbHandler) {
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
 
-	remainingTodos, err := h.DeleteTodo(todoId)
+	remainingTodos, err := h.Delete(todoId)
 	if check(err, context) != nil {
 		return
 	}

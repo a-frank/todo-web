@@ -5,11 +5,19 @@ import (
 	"fmt"
 )
 
-type DbHandler struct {
+type TodoStore interface {
+	GetAll() ([]Todo, error)
+	Add(todoText string) (*Todo, error)
+	Delete(todoId uint32) ([]Todo, error)
+	ToggleDone(todoId uint32) (*Todo, error)
+	Close()
+}
+
+type dbHandler struct {
 	connection *sql.DB
 }
 
-func NewDbHandler(host string, port int, dbname string, user string, password string, sslModeEnabled bool) (*DbHandler, error) {
+func NewTodoStore(host string, port int, dbname string, user string, password string, sslModeEnabled bool) (TodoStore, error) {
 	var sslMode string
 	if sslModeEnabled {
 		sslMode = "require"
@@ -32,19 +40,19 @@ func NewDbHandler(host string, port int, dbname string, user string, password st
 		return nil, err
 	}
 
-	return &DbHandler{
+	return &dbHandler{
 		connection: db,
 	}, nil
 }
 
-func (h *DbHandler) CloseConnection() {
+func (h *dbHandler) Close() {
 	err := h.connection.Close()
 	if err != nil {
 		fmt.Printf("Can't close connection to DB, %s", err.Error())
 	}
 }
 
-func (h *DbHandler) GetTodos() ([]Todo, error) {
+func (h *dbHandler) GetAll() ([]Todo, error) {
 	rows, err := h.connection.Query("SELECT * FROM Todo ORDER BY id")
 
 	if err != nil {
@@ -70,7 +78,7 @@ func (h *DbHandler) GetTodos() ([]Todo, error) {
 	return todos, nil
 }
 
-func (h *DbHandler) AddNewTodo(todoText string) (*Todo, error) {
+func (h *dbHandler) Add(todoText string) (*Todo, error) {
 	var id int
 	err := h.connection.QueryRow("INSERT INTO Todo (todo, done) VALUES($1, $2) RETURNING id", todoText, false).Scan(&id)
 	if err != nil {
@@ -86,7 +94,7 @@ func (h *DbHandler) AddNewTodo(todoText string) (*Todo, error) {
 	return &todo, nil
 }
 
-func (h *DbHandler) ToggleDone(todoId uint32) (*Todo, error) {
+func (h *dbHandler) ToggleDone(todoId uint32) (*Todo, error) {
 	row := h.connection.QueryRow("SELECT * FROM Todo Where id = $1", todoId)
 	var todo Todo
 	err := row.Scan(&todo.Id, &todo.Todo, &todo.Done)
@@ -106,11 +114,11 @@ func (h *DbHandler) ToggleDone(todoId uint32) (*Todo, error) {
 	return &todo, nil
 }
 
-func (h *DbHandler) DeleteTodo(todoId uint32) ([]Todo, error) {
+func (h *dbHandler) Delete(todoId uint32) ([]Todo, error) {
 	_, err := h.connection.Exec("DELETE FROM Todo WHERE id = $1", todoId)
 	if err != nil {
 		fmt.Printf("Can't delete todo %d: %s", todoId, err.Error())
 		return nil, err
 	}
-	return h.GetTodos()
+	return h.GetAll()
 }

@@ -20,11 +20,11 @@ var (
 )
 
 func main() {
-	handler, err := todos.NewDbHandler(host, port, dbname, user, password, false)
+	todoStore, err := todos.NewTodoStore(host, port, dbname, user, password, false)
 	if err != nil {
 		panic(err)
 	}
-	defer handler.CloseConnection()
+	defer todoStore.Close()
 
 	ginServer := gin.Default()
 
@@ -32,16 +32,16 @@ func main() {
 	ginServer.Static("/images", "./templates/images")
 
 	ginServer.GET("/", func(context *gin.Context) {
-		routes.GetIndex(context, handler)
+		routes.GetIndex(context, todoStore)
 	})
 	ginServer.POST("/todo", func(context *gin.Context) {
-		routes.AddTodo(context, handler)
+		routes.AddTodo(context, todoStore)
 	})
 	ginServer.POST("/todo/:id/toggle-done", func(context *gin.Context) {
-		routes.ToggleDone(context, handler)
+		routes.ToggleDone(context, todoStore)
 	})
 	ginServer.DELETE("/todo/:id", func(context *gin.Context) {
-		routes.DeleteTodo(context, handler)
+		routes.DeleteTodo(context, todoStore)
 	})
 
 	err = ginServer.Run()
