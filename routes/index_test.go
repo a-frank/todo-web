@@ -1,7 +1,6 @@
-package main
+package routes
 
 import (
-	"github.com/a-frank/web-dev/routes"
 	"github.com/a-frank/web-dev/test"
 	"github.com/gin-gonic/gin"
 	"net/http/httptest"
@@ -15,9 +14,13 @@ func TestGetIndex(t *testing.T) {
 
 	todoStore := &test.MemStore{}
 	_, _ = todoStore.Add("New Todo")
+	env := &RouterEnv{
+		Store:        todoStore,
+		TemplatePath: "../templates/",
+	}
 
 	testEngine.GET("/", func(context *gin.Context) {
-		routes.GetIndex(context, todoStore)
+		GetIndex(context, env)
 	})
 
 	request := httptest.NewRequest("GET", "/", nil)

@@ -26,22 +26,27 @@ func main() {
 	}
 	defer todoStore.Close()
 
+	env := &routes.RouterEnv{
+		Store:        todoStore,
+		TemplatePath: "./templates/",
+	}
+
 	ginServer := gin.Default()
 
 	ginServer.Static("/css", "./templates/css")
 	ginServer.Static("/images", "./templates/images")
 
 	ginServer.GET("/", func(context *gin.Context) {
-		routes.GetIndex(context, todoStore)
+		routes.GetIndex(context, env)
 	})
 	ginServer.POST("/todo", func(context *gin.Context) {
-		routes.AddTodo(context, todoStore)
+		routes.AddTodo(context, env)
 	})
 	ginServer.POST("/todo/:id/toggle-done", func(context *gin.Context) {
-		routes.ToggleDone(context, todoStore)
+		routes.ToggleDone(context, env)
 	})
 	ginServer.DELETE("/todo/:id", func(context *gin.Context) {
-		routes.DeleteTodo(context, todoStore)
+		routes.DeleteTodo(context, env)
 	})
 
 	err = ginServer.Run()

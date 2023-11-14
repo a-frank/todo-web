@@ -8,13 +8,13 @@ import (
 	"strconv"
 )
 
-func GetIndex(context *gin.Context, h todos.TodoStore) {
-	t, err := template.ParseFiles("./templates/index.html", "./templates/todo.tmpl")
+func GetIndex(context *gin.Context, env *RouterEnv) {
+	t, err := template.ParseFiles(env.TemplatePath+"index.html", env.TemplatePath+"todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
 
-	allTodos, err := h.GetAll()
+	allTodos, err := env.Store.GetAll()
 	if check(err, context) != nil {
 		return
 	}
@@ -29,8 +29,8 @@ func GetIndex(context *gin.Context, h todos.TodoStore) {
 	context.Status(http.StatusOK)
 }
 
-func AddTodo(context *gin.Context, h todos.TodoStore) {
-	t, err := template.ParseFiles("./templates/todo.tmpl")
+func AddTodo(context *gin.Context, env *RouterEnv) {
+	t, err := template.ParseFiles(env.TemplatePath + "todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
@@ -44,7 +44,7 @@ func AddTodo(context *gin.Context, h todos.TodoStore) {
 		return
 	}
 
-	newTodo, err := h.Add(todoText)
+	newTodo, err := env.Store.Add(todoText)
 	if check(err, context) != nil {
 		return
 	}
@@ -56,15 +56,15 @@ func AddTodo(context *gin.Context, h todos.TodoStore) {
 	context.Status(http.StatusOK)
 }
 
-func ToggleDone(context *gin.Context, h todos.TodoStore) {
-	t, err := template.ParseFiles("./templates/todo.tmpl")
+func ToggleDone(context *gin.Context, env *RouterEnv) {
+	t, err := template.ParseFiles(env.TemplatePath + "todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
 
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
-	updatedTodo, err := h.ToggleDone(todoId)
+	updatedTodo, err := env.Store.ToggleDone(todoId)
 
 	err = t.ExecuteTemplate(context.Writer, "todo", updatedTodo)
 	if check(err, context) != nil {
@@ -73,8 +73,8 @@ func ToggleDone(context *gin.Context, h todos.TodoStore) {
 	context.Status(http.StatusOK)
 }
 
-func DeleteTodo(context *gin.Context, h todos.TodoStore) {
-	t, err := template.ParseFiles("./templates/todo.tmpl")
+func DeleteTodo(context *gin.Context, env *RouterEnv) {
+	t, err := template.ParseFiles(env.TemplatePath + "todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
@@ -82,7 +82,7 @@ func DeleteTodo(context *gin.Context, h todos.TodoStore) {
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
 
-	remainingTodos, err := h.Delete(todoId)
+	remainingTodos, err := env.Store.Delete(todoId)
 	if check(err, context) != nil {
 		return
 	}
