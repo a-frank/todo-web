@@ -1,0 +1,27 @@
+services: 
+  app: 
+    build: .
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - db
+    environment: 
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=todos
+      - DB_USER=web-dev-app
+      - DB_PASSWORD=secret
+  db: 
+    image: postgres:alpine3.18
+    environment: 
+      - POSTGRES_USER=web-dev-app
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=todos
+    ports: 
+      - "5432:5432"
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+volumes: 
+  db: 
+    driver: local

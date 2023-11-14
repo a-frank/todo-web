@@ -1,4 +1,4 @@
-FROM golang:1.21.3-alpine3.18 as build
+FROM golang:1.21.4-alpine3.18 as build
 
 COPY routes /build/routes
 COPY todos /build/todos
