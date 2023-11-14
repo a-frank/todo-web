@@ -33,7 +33,7 @@ func TestGetIndex(t *testing.T) {
 		t.Error("No row found for todo_1")
 	}
 
-	if !strings.Contains(body, "<td>New Todo<b/td>") {
+	if !strings.Contains(body, "<td>New Todo</td>") {
 		t.Error("Didn't find cell with todo text")
 	}
 }
