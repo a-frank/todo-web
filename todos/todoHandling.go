@@ -5,15 +5,47 @@ import (
 	"fmt"
 )
 
-var todoState = map[uint32]Todo{
-	1: {Id: 1, Todo: "Something", Done: false},
-	2: {Id: 2, Todo: "Nothing", Done: true},
+type DbHandler struct {
+	connection *sql.DB
 }
 
-var DbConnection *sql.DB
+func NewDbHandler(host string, port int, dbname string, user string, password string, sslModeEnabled bool) (*DbHandler, error) {
+	var sslMode string
+	if sslModeEnabled {
+		sslMode = "require"
+	} else {
+		sslMode = "disable"
+	}
 
-func GetTodos() ([]Todo, error) {
-	rows, err := DbConnection.Query("SELECT * FROM Todo ORDER BY id")
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		host, port, user, password, dbname, sslMode)
+	db, err := sql.Open("postgres", psqlInfo)
+
+	if err != nil {
+		fmt.Printf("Can't open connection to DB, %s", err.Error())
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Printf("Can't ping DB, %s", err.Error())
+		return nil, err
+	}
+
+	return &DbHandler{
+		connection: db,
+	}, nil
+}
+
+func (h *DbHandler) CloseConnection() {
+	err := h.connection.Close()
+	if err != nil {
+		fmt.Printf("Can't close connection to DB, %s", err.Error())
+	}
+}
+
+func (h *DbHandler) GetTodos() ([]Todo, error) {
+	rows, err := h.connection.Query("SELECT * FROM Todo ORDER BY id")
 
 	if err != nil {
 		fmt.Printf("Can't get todos, %s", err.Error())
@@ -38,9 +70,9 @@ func GetTodos() ([]Todo, error) {
 	return todos, nil
 }
 
-func AddNewTodo(todoText string) (*Todo, error) {
+func (h *DbHandler) AddNewTodo(todoText string) (*Todo, error) {
 	var id int
-	err := DbConnection.QueryRow("INSERT INTO Todo (todo, done) VALUES($1, $2) RETURNING id", todoText, false).Scan(&id)
+	err := h.connection.QueryRow("INSERT INTO Todo (todo, done) VALUES($1, $2) RETURNING id", todoText, false).Scan(&id)
 	if err != nil {
 		fmt.Printf("Can't insert todo into DB: %s", err.Error())
 		return nil, err
@@ -54,8 +86,8 @@ func AddNewTodo(todoText string) (*Todo, error) {
 	return &todo, nil
 }
 
-func ToggleDone(todoId uint32) (*Todo, error) {
-	row := DbConnection.QueryRow("SELECT * FROM Todo Where id = $1", todoId)
+func (h *DbHandler) ToggleDone(todoId uint32) (*Todo, error) {
+	row := h.connection.QueryRow("SELECT * FROM Todo Where id = $1", todoId)
 	var todo Todo
 	err := row.Scan(&todo.Id, &todo.Todo, &todo.Done)
 	if err != nil {
@@ -65,7 +97,7 @@ func ToggleDone(todoId uint32) (*Todo, error) {
 
 	todo.Done = !todo.Done
 
-	_, err = DbConnection.Exec("UPDATE Todo SET done = $1 Where id = $2", todo.Done, todoId)
+	_, err = h.connection.Exec("UPDATE Todo SET done = $1 Where id = $2", todo.Done, todoId)
 	if err != nil {
 		fmt.Printf("Can't update done state of todo %d: %s", todoId, err.Error())
 		return nil, err
@@ -74,11 +106,11 @@ func ToggleDone(todoId uint32) (*Todo, error) {
 	return &todo, nil
 }
 
-func DeleteTodo(todoId uint32) ([]Todo, error) {
-	_, err := DbConnection.Exec("DELETE FROM Todo WHERE id = $1", todoId)
+func (h *DbHandler) DeleteTodo(todoId uint32) ([]Todo, error) {
+	_, err := h.connection.Exec("DELETE FROM Todo WHERE id = $1", todoId)
 	if err != nil {
 		fmt.Printf("Can't delete todo %d: %s", todoId, err.Error())
 		return nil, err
 	}
-	return GetTodos()
+	return h.GetTodos()
 }

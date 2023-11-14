@@ -8,13 +8,13 @@ import (
 	"strconv"
 )
 
-func GetIndex(context *gin.Context) {
+func GetIndex(context *gin.Context, h *todos.DbHandler) {
 	t, err := template.ParseFiles("./templates/index.html", "./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
 	}
 
-	allTodos, err := todos.GetTodos()
+	allTodos, err := h.GetTodos()
 	if check(err, context) != nil {
 		return
 	}
@@ -29,7 +29,7 @@ func GetIndex(context *gin.Context) {
 	context.Status(http.StatusOK)
 }
 
-func AddTodo(context *gin.Context) {
+func AddTodo(context *gin.Context, h *todos.DbHandler) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -44,7 +44,7 @@ func AddTodo(context *gin.Context) {
 		return
 	}
 
-	newTodo, err := todos.AddNewTodo(todoText)
+	newTodo, err := h.AddNewTodo(todoText)
 	if check(err, context) != nil {
 		return
 	}
@@ -56,7 +56,7 @@ func AddTodo(context *gin.Context) {
 	context.Status(http.StatusOK)
 }
 
-func ToggleDone(context *gin.Context) {
+func ToggleDone(context *gin.Context, h *todos.DbHandler) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -64,7 +64,7 @@ func ToggleDone(context *gin.Context) {
 
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
-	updatedTodo, err := todos.ToggleDone(todoId)
+	updatedTodo, err := h.ToggleDone(todoId)
 
 	err = t.ExecuteTemplate(context.Writer, "todo", updatedTodo)
 	if check(err, context) != nil {
@@ -73,7 +73,7 @@ func ToggleDone(context *gin.Context) {
 	context.Status(http.StatusOK)
 }
 
-func DeleteTodo(context *gin.Context) {
+func DeleteTodo(context *gin.Context, h *todos.DbHandler) {
 	t, err := template.ParseFiles("./templates/todo.tmpl")
 	if check(err, context) != nil {
 		return
@@ -82,7 +82,7 @@ func DeleteTodo(context *gin.Context) {
 	paramId, _ := strconv.Atoi(context.Param("id"))
 	todoId := uint32(paramId)
 
-	remainingTodos, err := todos.DeleteTodo(todoId)
+	remainingTodos, err := h.DeleteTodo(todoId)
 	if check(err, context) != nil {
 		return
 	}

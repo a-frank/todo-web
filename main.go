@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/a-frank/web-dev/routes"
 	"github.com/a-frank/web-dev/todos"
@@ -21,32 +20,29 @@ var (
 )
 
 func main() {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
+	handler, err := todos.NewDbHandler(host, port, dbname, user, password, false)
 	if err != nil {
 		panic(err)
 	}
-	todos.DbConnection = db
-	defer func(db *sql.DB) {
-		_ = db.Close()
-	}(db)
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
+	defer handler.CloseConnection()
 
 	ginServer := gin.Default()
 
 	ginServer.Static("/css", "./templates/css")
 	ginServer.Static("/images", "./templates/images")
 
-	ginServer.GET("/", routes.GetIndex)
-	ginServer.POST("/todo", routes.AddTodo)
-	ginServer.POST("/todo/:id/toggle-done", routes.ToggleDone)
-	ginServer.DELETE("/todo/:id", routes.DeleteTodo)
+	ginServer.GET("/", func(context *gin.Context) {
+		routes.GetIndex(context, handler)
+	})
+	ginServer.POST("/todo", func(context *gin.Context) {
+		routes.AddTodo(context, handler)
+	})
+	ginServer.POST("/todo/:id/toggle-done", func(context *gin.Context) {
+		routes.ToggleDone(context, handler)
+	})
+	ginServer.DELETE("/todo/:id", func(context *gin.Context) {
+		routes.DeleteTodo(context, handler)
+	})
 
 	err = ginServer.Run()
 	fmt.Printf("Error with server %s", err.Error())
