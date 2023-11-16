@@ -9,12 +9,12 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=todos
-      - DB_USER=web-dev-app
+      - DB_USER=todo-web-app
       - DB_PASSWORD=secret
   db: 
     image: postgres:alpine3.18
     environment: 
-      - POSTGRES_USER=web-dev-app
+      - POSTGRES_USER=todo-web-app
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=todos
     ports: 

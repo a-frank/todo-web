@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/a-frank/web-dev/routes"
-	"github.com/a-frank/web-dev/todos"
+	"github.com/a-frank/todo-web/routes"
+	"github.com/a-frank/todo-web/todos"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"golang.org/x/term"

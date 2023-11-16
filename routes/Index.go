@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/a-frank/web-dev/todos"
+	"github.com/a-frank/todo-web/todos"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"

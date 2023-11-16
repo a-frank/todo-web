@@ -1,4 +1,4 @@
-module github.com/a-frank/web-dev
+module github.com/a-frank/todo-web
 
 go 1.21.4
 

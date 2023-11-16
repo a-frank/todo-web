@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/a-frank/web-dev/test"
+	"github.com/a-frank/todo-web/test"
 	"github.com/gin-gonic/gin"
 	"net/http/httptest"
 	"strings"

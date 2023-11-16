@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/a-frank/web-dev/todos"
+	"github.com/a-frank/todo-web/todos"
 	"golang.org/x/exp/maps"
 )
 
